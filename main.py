@@ -1,7 +1,7 @@
 import turtle
 import random
 
-# Constants
+# Constants. Referenced in other parts of the code, so you can easily change things like game speed or window size without causing problems.
 WIDTH = 500
 HEIGHT = 500
 DELAY = 85  # In milliseconds
@@ -21,7 +21,7 @@ def bind_direction_keys():
     screen.onkey(lambda: set_snake_direction("left"), "Left")
     screen.onkey(lambda: set_snake_direction("right"), "Right")
 
-
+# Snake controls. Makes sure that you can't directly reverse onto the body. Also changes direction of the head.
 def set_snake_direction(direction):
     global snake_direction
     if direction == "up":
@@ -40,7 +40,6 @@ def set_snake_direction(direction):
         if snake_direction != "left":
             snake_direction = "right"
             head_stamper.setheading(0)
-
 
 def gameplay():
     stamper.clearstamps()  # Remove all current stamps on screen
@@ -101,7 +100,7 @@ def get_distance(pos1, pos2):
     distance = ((y2 - y1) ** 2 + (x2 - x1) ** 2) ** 0.5
     return distance
 
-
+# Reset. Happens on collision with screen edge, snake body, and when first running the game.
 def reset():
     global score, snake, head, snake_direction, food_pos
     score = 0
@@ -127,6 +126,7 @@ screen.addshape(apple)
 bod_segment = "body.gif"
 screen.addshape(bod_segment)
 
+# Turtle won't allow a custom image to turn, so I use this section to draw the snake's head as a compound of shapes.
 skully = turtle.Shape("compound")
 
 pen = turtle.Turtle()
@@ -190,34 +190,30 @@ pen.up()
 pen.end_poly()
 skully.addcomponent(pen.get_poly(), "black", "black")
 
-
-#pen.goto(-10,0) # alpha
-pen.goto(0,10) # alpha
+pen.goto(0,10)
 pen.pensize(3)
 pen.down()
 pen.pencolor("pink")
 pen.begin_poly()
-#pen.goto(-15,0) #bravo
-#pen.goto(-20,3) #charlie
-#pen.goto(-15,0) #delta
-#pen.goto(-20,-3) #echo
-pen.goto(0,15) #bravo
-pen.goto(3,20) #charlie
-pen.goto(0,15) #delta
-pen.goto(-3,20) #echo
+pen.goto(0,15)
+pen.goto(3,20)
+pen.goto(0,15) 
+pen.goto(-3,20)
 pen.end_poly()
 skully.addcomponent(pen.get_poly(), "pink", "pink")
 
 pen.hideturtle()
 pen.clear()
+# End of drawing section
 
+# Registers the drawn head as a custom shape.
 screen.register_shape("skull", skully)
 
 # Event handlers, used for arrow key controls
 screen.listen()
 bind_direction_keys()
 
-# Stamper for each body section
+# Stamp for the body sections.
 stamper = turtle.Turtle()
 stamper.shape(bod_segment)
 stamper.shapesize(25 / 20)
@@ -229,14 +225,14 @@ head_stamper.shape("skull")
 stamper.shapesize(25 / 20)
 head_stamper.penup()
 
-# Food shape
+# The food. Uses an apple picture.
 food = turtle.Turtle()
 food.shape(apple)
 food.color("red")
 food.shapesize(FOOD_SIZE / 25)
 food.penup()
 
-# Start the animation
+# Starts the game, but also serves as the point for restarting it.
 reset()
 
 turtle.done()
